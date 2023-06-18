@@ -17,7 +17,7 @@ repositories {
 
 kotlin {
     jvm {
-        jvmToolchain(11)
+        jvmToolchain(17)
         withJava()
     }
 
@@ -31,7 +31,12 @@ kotlin {
                 implementation("com.arkivanov.decompose:extensions-compose-jetbrains:2.0.0-beta-01")
             }
         }
-        val jvmTest by getting
+
+        val jvmTest by getting {
+            dependencies {
+                implementation("org.junit.jupiter:junit-jupiter-api:5.9.3")
+            }
+        }
     }
 }
 
