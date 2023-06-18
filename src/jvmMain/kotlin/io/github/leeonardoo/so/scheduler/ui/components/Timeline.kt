@@ -45,7 +45,7 @@ fun TimelineItem(process: SimulatedProcess, index: Int) {
                 .clip(RoundedCornerShape(8.dp))
                 .background(process.color)
                 .then(
-                    if (process.color ==  Color.Transparent) {
+                    if (process.color == Color.Transparent) {
                         Modifier.border(
                             width = 2.dp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,

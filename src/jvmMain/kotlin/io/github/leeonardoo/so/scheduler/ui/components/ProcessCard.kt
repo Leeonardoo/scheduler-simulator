@@ -5,8 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import io.github.leeonardoo.so.scheduler.model.SimulatedProcess
@@ -57,7 +58,7 @@ fun ProcessCard(
                     Text("Editar")
                 },
                 leadingIcon = {
-                    Icon(Icons.Default.Edit, null)
+                    Icon(Icons.Outlined.Edit, null)
                 },
                 onClick = {
                     isMenuExpanded = false
@@ -70,7 +71,7 @@ fun ProcessCard(
                     Text("Remover")
                 },
                 leadingIcon = {
-                    Icon(Icons.Default.Delete, null)
+                    Icon(Icons.Outlined.Delete, null)
                 },
                 onClick = {
                     isMenuExpanded = false
@@ -91,27 +92,44 @@ fun ProcessCard(
 
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Row {
-                    Text("Chegada", modifier = Modifier.weight(1f))
-
-                    Text(process.arrivalTime.toString())
+                    TitleItem(text = "Chegada")
+                    InfoItem(text = process.arrivalTime.toString())
                 }
 
                 Row {
-                    Text("Burst", modifier = Modifier.weight(1f))
-
-                    Text(process.burstTime.toString())
+                    TitleItem(text = "Burst")
+                    InfoItem(text = process.burstTime.toString())
                 }
 
                 if (showPriority) {
                     Row {
-                        Text("Prioridade", modifier = Modifier.weight(1f))
-
-                        Text(process.priority.toString())
+                        TitleItem(text = "Prioridade")
+                        InfoItem(text = process.priority.toString())
                     }
                 }
             }
         }
     }
+}
+
+
+@Composable
+private fun RowScope.TitleItem(modifier: Modifier = Modifier, text: String) {
+    Text(
+        text = text,
+        modifier = modifier.weight(1f),
+        style = MaterialTheme.typography.bodyMedium
+    )
+}
+
+@Composable
+private fun InfoItem(modifier: Modifier = Modifier, text: String) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        fontWeight = FontWeight.Bold
+    )
 }
 
 @Preview

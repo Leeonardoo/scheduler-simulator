@@ -66,7 +66,7 @@ fun ScrollbarLazyRow(
         LazyRow(
             modifier = Modifier.padding(bottom = 8.dp),
             state = state,
-            contentPadding = contentPadding ,
+            contentPadding = contentPadding,
             reverseLayout = reverseLayout,
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment,
