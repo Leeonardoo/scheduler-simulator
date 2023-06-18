@@ -49,7 +49,7 @@ fun NavigationRailScaffold(
                             },
                             label = {
                                 Text(
-                                    it.abbreviatedName,
+                                    it.label,
                                     textAlign = TextAlign.Center
                                 )
                             },

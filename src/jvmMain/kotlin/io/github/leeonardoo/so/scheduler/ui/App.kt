@@ -5,10 +5,9 @@ import androidx.compose.foundation.defaultScrollbarStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -20,20 +19,21 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.pop
-import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.leeonardoo.so.scheduler.Algorithm
-import io.github.leeonardoo.so.scheduler.ui.home.ChildScreen
-import io.github.leeonardoo.so.scheduler.ui.home.HomeScreen
 import io.github.leeonardoo.so.scheduler.ui.main.NavigationRailScaffold
 import io.github.leeonardoo.so.scheduler.ui.navigation.ChildStack
 import io.github.leeonardoo.so.scheduler.ui.navigation.ProvideComponentContext
-import io.github.leeonardoo.so.scheduler.ui.navigation.Screen
+import io.github.leeonardoo.so.scheduler.ui.simulation.SimulationScreen
 
 @Composable
 fun App() {
-    val navigation = remember { StackNavigation<Screen>() }
+    val navigation = remember { StackNavigation<Algorithm>() }
+
+    var selectedAlgorithm by remember {
+        mutableStateOf(Algorithm.FIFO)
+    }
 
     MaterialTheme(colorScheme = darkColorScheme()) {
         NavigationRailScaffold(
@@ -41,21 +41,21 @@ fun App() {
 
             },
             onClickItem = {
-
+                selectedAlgorithm = it
+                navigation.navigate { _ ->
+                    listOf(it)
+                }
             },
-            selectedAlgorithm = Algorithm.FIFO,
+            selectedAlgorithm = selectedAlgorithm,
             content = {
                 Surface(modifier = Modifier.weight(1f), tonalElevation = 0.5.dp) {
                     ChildStack(
                         source = navigation,
-                        initialStack = { listOf(Screen.Home) },
+                        initialStack = { listOf(Algorithm.FIFO) },
                         handleBackButton = true,
                         animation = stackAnimation(scale() + fade()),
-                    ) { screen ->
-                        when (screen) {
-                            is Screen.Home -> HomeScreen(onItemClick = { navigation.push(Screen.Child) })
-                            is Screen.Child -> ChildScreen(onBack = navigation::pop)
-                        }
+                    ) { algorithm ->
+                        SimulationScreen(algorithm)
                     }
                 }
             }
@@ -68,7 +68,7 @@ fun main() {
     val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle)
 
     application {
-        val windowState = rememberWindowState()
+        val windowState = rememberWindowState(size = DpSize(1280.dp, 720.dp))
 
         LifecycleController(lifecycle, windowState)
 

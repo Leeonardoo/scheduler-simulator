@@ -1,4 +1,4 @@
-package io.github.leeonardoo.so.scheduler.ui.home
+package io.github.leeonardoo.so.scheduler.ui.simulation
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Column
@@ -7,13 +7,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.leeonardoo.so.scheduler.Algorithm
 
 @Composable
-fun HomeScreen(onItemClick: () -> Unit = {}) {
+fun SimulationScreen(algorithm: Algorithm) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Simulador de Schedulers") },
+                title = {
+                    Text(algorithm.title)
+                },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp)
                 )
@@ -25,27 +28,7 @@ fun HomeScreen(onItemClick: () -> Unit = {}) {
                     .padding(it)
                     .padding(16.dp)
             ) {
-                Text("HomeScreen")
-                Button(onItemClick) {
-                    Text("Navigate")
-                }
-            }
-        }
-    )
-}
-
-@Composable
-fun ChildScreen(onBack: () -> Unit) {
-    Scaffold(
-        topBar = {
-
-        },
-        content = {
-            Column {
-                Text("ChildScreen")
-                Button(onBack) {
-                    Text("Navigate back")
-                }
+                Text("SimulationScreen")
             }
         }
     )
@@ -53,8 +36,8 @@ fun ChildScreen(onBack: () -> Unit) {
 
 @Preview
 @Composable
-fun HomeScreenPreview() {
+fun SimulationScreen() {
     MaterialTheme(darkColorScheme()) {
-        HomeScreen()
+        SimulationScreen()
     }
 }

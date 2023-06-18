@@ -6,36 +6,37 @@ import androidx.compose.material.icons.filled.Loop
 import androidx.compose.material.icons.filled.LowPriority
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.arkivanov.essenty.parcelable.Parcelable
 
-enum class Algorithm(val label: String, val abbreviatedName: String, val icon: ImageVector) {
+enum class Algorithm(val title: String, val label: String, val icon: ImageVector): Parcelable {
 
     FIFO(
-        label = "FIFO (First-in-First-out",
-        abbreviatedName = "FIFO",
+        title = "FIFO (First-in-First-out)",
+        label = "FIFO",
         icon = Icons.Default.FormatListNumbered
     ), // Não Preemptivo
 
     SJF(
-        label = "SJF (Shortest-Job-First",
-        abbreviatedName = "SJF",
+        title = "SJF (Shortest-Job-First)",
+        label = "SJF",
         icon = Icons.Default.Sort
     ), // Não Preemptivo
 
     RoundRobin(
-        label = "RR (Round Robin)",
-        abbreviatedName = "Round Robin",
+        title = "RR (Round Robin)",
+        label = "Round Robin",
         icon = Icons.Default.Loop
     ), // Preemptivo
 
     NonPreemptiveStaticPriority(
-        label = "Prioridade (Não preemptivo, Estática)",
-        abbreviatedName = "Prioridade",
+        title = "Prioridade (Não preemptivo, Estática)",
+        label = "Prioridade",
         icon = Icons.Default.LowPriority
     ), // Não Preemptivo
 
     PreemptiveStaticPriority(
-        label = "Prioridade (Preemptivo, Estática)",
-        abbreviatedName = "Prioridade\n(Preemptivo)",
+        title = "Prioridade (Preemptivo, Estática)",
+        label = "Prioridade\n(Preemptivo)",
         icon = Icons.Default.LowPriority
     ) // Preemptivo
 }
