@@ -11,7 +11,10 @@ class Scheduler(
     private val algorithm: Algorithm
 ) {
 
-    fun runSimulation(): List<SimulatedProcess> {
+    private val byArrivalTime: List<SimulatedProcess>
+        get() = processes.sortedBy { it.arrivalTime }
+
+    fun simulate(): List<SimulatedProcess> {
         return when (algorithm) {
             Algorithm.FIFO -> firstInFirstOut()
 
@@ -22,9 +25,6 @@ class Scheduler(
             Algorithm.Priority -> TODO()
         }
     }
-
-    private val byArrivalTime: List<SimulatedProcess>
-        get() = processes.sortedBy { it.arrivalTime }
 
     private fun firstInFirstOut(): List<SimulatedProcess> {
         val sorted = byArrivalTime
