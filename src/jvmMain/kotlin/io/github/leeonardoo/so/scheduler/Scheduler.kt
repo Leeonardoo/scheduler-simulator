@@ -24,7 +24,7 @@ class Scheduler(
 
             Algorithm.RoundRobin -> roundRobin()
 
-            Algorithm.Priority -> TODO()
+            Algorithm.NonPreemptiveStaticPriority -> nonPreemptiveStaticPriority()
         }
     }
 
@@ -47,7 +47,7 @@ class Scheduler(
                 currentTime += 1
             }
 
-            // Simula a execução
+            // Executa o processo até finalizar
             repeat(process.burstTime) {
                 scheduledProcesses.add(process.copy())
 
@@ -98,6 +98,7 @@ class Scheduler(
                         burstTime = 1
                     )
                 )
+
                 currentTime++
             }
         }
@@ -151,6 +152,46 @@ class Scheduler(
                         burstTime = 1
                     )
                 )
+
+                currentTime++
+            }
+        }
+
+        return scheduledProcesses
+    }
+
+    private fun nonPreemptiveStaticPriority(): List<SimulatedProcess> {
+        val processQueue = byArrivalTime.toMutableList()
+        var currentTime = 0
+        val scheduledProcesses = mutableListOf<SimulatedProcess>()
+
+        // Continua enquanto ainda há processos para serem escalonados
+        while (processQueue.isNotEmpty()) {
+            // Encontra o processo com a maior prioridade que já chegou
+            val currentHighestPriorityProcess = processQueue
+                .filter { it.arrivalTime <= currentTime }
+                .maxByOrNull { it.priority }
+
+            if (currentHighestPriorityProcess != null) {
+                // Executa o processo até finalizar
+                repeat(currentHighestPriorityProcess.burstTime) {
+                    scheduledProcesses.add(currentHighestPriorityProcess.copy())
+
+                    currentTime++
+                }
+
+                // Ao finalizar, remove da fila de processos
+                processQueue.remove(currentHighestPriorityProcess)
+            } else {
+                // Se nenhum processo pode executar, adiciona um período de espera de cor transparente
+                scheduledProcesses.add(
+                    SimulatedProcess(
+                        color = Color.Transparent,
+                        arrivalTime = currentTime,
+                        burstTime = 1
+                    )
+                )
+
                 currentTime++
             }
         }
@@ -216,6 +257,25 @@ class Scheduler(
                 SimulatedProcess(
                     arrivalTime = 29,
                     burstTime = 14
+                )
+            )
+
+        val testnonPreemptiveStaticPriorityProcesses: List<SimulatedProcess>
+            get() = listOf(
+                SimulatedProcess(
+                    arrivalTime = 0,
+                    burstTime = 10,
+                    priority = 0
+                ),
+                SimulatedProcess(
+                    arrivalTime = 2,
+                    burstTime = 5,
+                    priority = 1
+                ),
+                SimulatedProcess(
+                    arrivalTime = 9,
+                    burstTime = 10,
+                    priority = 2
                 )
             )
     }

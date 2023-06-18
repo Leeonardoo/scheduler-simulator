@@ -12,7 +12,7 @@ data class SimulatedProcess (
     val arrivalTime: Int, // Tempo de chegada
     val burstTime: Int, // Duração
     var remainingTime: Int = burstTime, // Tempo restante
-    val priority: Int? = null, // Prioridade (se tiver)
+    val priority: Int = 0, // Prioridade
     val completionInfo: ProcessCompletionInfo? = null
 )
 
