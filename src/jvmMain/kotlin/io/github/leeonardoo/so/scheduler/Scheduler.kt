@@ -25,6 +25,8 @@ class Scheduler(
             Algorithm.RoundRobin -> roundRobin()
 
             Algorithm.NonPreemptiveStaticPriority -> nonPreemptiveStaticPriority()
+
+            Algorithm.PreemptiveStaticPriority -> preemptiveStaticPriority()
         }
     }
 
@@ -63,7 +65,7 @@ class Scheduler(
         var currentTime = 0
         val scheduledProcesses = mutableListOf<SimulatedProcess>()
 
-        // Continua enquanto ainda há processos para serem escalonados
+        // Continua enquanto ainda há processos para escalonar
         while (processQueue.isNotEmpty()) {
             var shortestIndex = -1
 
@@ -111,7 +113,7 @@ class Scheduler(
         var currentTime = 0
         val scheduledProcesses = mutableListOf<SimulatedProcess>()
 
-        // Continua enquanto ainda há processos para serem escalonados
+        // Continua enquanto ainda há processos para escalonar
         while (processQueue.isNotEmpty()) {
             var hasRun = false
             var index = 0
@@ -165,7 +167,7 @@ class Scheduler(
         var currentTime = 0
         val scheduledProcesses = mutableListOf<SimulatedProcess>()
 
-        // Continua enquanto ainda há processos para serem escalonados
+        // Continua enquanto ainda há processos para escalonar
         while (processQueue.isNotEmpty()) {
             // Encontra o processo com a maior prioridade que já chegou
             val currentHighestPriorityProcess = processQueue
@@ -198,6 +200,54 @@ class Scheduler(
 
         return scheduledProcesses
     }
+
+    private fun preemptiveStaticPriority(): List<SimulatedProcess> {
+        val processQueue = byArrivalTime.toMutableList()
+        var currentTime = 0
+        val scheduledProcesses = mutableListOf<SimulatedProcess>()
+
+        // Continua enquanto ainda há processos para escalonar
+        while (processQueue.isNotEmpty()) {
+            // Encontra o processo com a maior prioridade que já chegou
+            val currentHighestPriorityProcess = processQueue
+                .filter { it.arrivalTime <= currentTime }
+                .sortedBy { it.arrivalTime }
+                .maxByOrNull { it.priority }
+
+            if (currentHighestPriorityProcess != null) {
+                // Roda esse processo pela duração do quantum ou do tempo restante, o que for menor
+                val duration = min(quantum, currentHighestPriorityProcess.remainingTime)
+
+                repeat(duration) {
+                    scheduledProcesses.add(currentHighestPriorityProcess.copy())
+
+                    currentTime++
+                    currentHighestPriorityProcess.remainingTime--
+                }
+
+                processQueue[processQueue.indexOf(currentHighestPriorityProcess)] = currentHighestPriorityProcess.copy(arrivalTime = currentHighestPriorityProcess.arrivalTime + duration)
+
+                // Remove o processo atual da fila se o tempo de execução restante for 0
+                if (currentHighestPriorityProcess.remainingTime <= 0) {
+                    processQueue.remove(currentHighestPriorityProcess)
+                }
+            } else {
+                // Se nenhum processo pode executar, adiciona um período vazio de cor transparente
+                scheduledProcesses.add(
+                    SimulatedProcess(
+                        color = Color.Transparent,
+                        arrivalTime = currentTime,
+                        burstTime = 1
+                    )
+                )
+
+                currentTime++
+            }
+        }
+
+        return scheduledProcesses
+    }
+
 
     companion object {
         val testFIFOProcesses: List<SimulatedProcess>
@@ -270,6 +320,30 @@ class Scheduler(
                 SimulatedProcess(
                     arrivalTime = 2,
                     burstTime = 5,
+                    priority = 1
+                ),
+                SimulatedProcess(
+                    arrivalTime = 9,
+                    burstTime = 10,
+                    priority = 2
+                )
+            )
+
+        val testPreemptiveStaticPriorityProcesses: List<SimulatedProcess>
+            get() = listOf(
+                SimulatedProcess(
+                    arrivalTime = 0,
+                    burstTime = 10,
+                    priority = 0
+                ),
+                SimulatedProcess(
+                    arrivalTime = 1,
+                    burstTime = 6,
+                    priority = 1
+                ),
+                SimulatedProcess(
+                    arrivalTime = 2,
+                    burstTime = 7,
                     priority = 1
                 ),
                 SimulatedProcess(
