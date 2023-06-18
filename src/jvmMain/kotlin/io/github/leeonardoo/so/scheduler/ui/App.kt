@@ -1,5 +1,7 @@
 package io.github.leeonardoo.so.scheduler.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.LocalScrollbarStyle
 import androidx.compose.foundation.defaultScrollbarStyle
 import androidx.compose.material3.MaterialTheme
@@ -35,10 +37,18 @@ fun App() {
         mutableStateOf(Algorithm.FIFO)
     }
 
+    var isDialogVisible by remember {
+        mutableStateOf(false)
+    }
+
     MaterialTheme(colorScheme = darkColorScheme()) {
+        if (isDialogVisible) {
+            ProcessDialog(algorithm = selectedAlgorithm, onDismiss = {isDialogVisible = false})
+        }
+
         NavigationRailScaffold(
             onClickFab = {
-
+                isDialogVisible = true
             },
             onClickItem = {
                 selectedAlgorithm = it
