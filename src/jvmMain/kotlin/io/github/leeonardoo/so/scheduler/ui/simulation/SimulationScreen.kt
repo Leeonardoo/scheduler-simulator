@@ -108,6 +108,7 @@ private fun SimulationContent(
         ) {
             items(items = addedProcesses, key = { it.id }) {
                 ProcessCard(
+                    modifier = Modifier.animateItemPlacement(),
                     process = it,
                     showPriority = algorithm == Algorithm.PreemptiveStaticPriority || algorithm == Algorithm.NonPreemptiveStaticPriority,
                     onClickEdit = { onClickEdit(it) },

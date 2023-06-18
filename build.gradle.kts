@@ -48,6 +48,8 @@ allprojects {
                     listOf(
                         "-Xopt-in=androidx.compose.material3.ExperimentalMaterial3Api",
                         "-Xopt-in=com.arkivanov.decompose.ExperimentalDecomposeApi",
+                        "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi",
+
                     )
                 )
             }

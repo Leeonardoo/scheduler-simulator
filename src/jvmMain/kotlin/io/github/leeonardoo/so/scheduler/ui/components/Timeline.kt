@@ -17,14 +17,18 @@ import androidx.compose.ui.unit.dp
 import io.github.leeonardoo.so.scheduler.model.SimulatedProcess
 
 @Composable
-fun Timeline(contentPadding: PaddingValues, scheduledProcesses: List<SimulatedProcess>) {
+fun Timeline(
+    contentPadding: PaddingValues,
+    scheduledProcesses: List<SimulatedProcess>
+) {
     ScrollbarLazyRow(
         scrollbarPadding = contentPadding,
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        itemsIndexed(scheduledProcesses) { index, item ->
+        itemsIndexed(items = scheduledProcesses) { index, item ->
             TimelineItem(
+                modifier = Modifier.animateItemPlacement(),
                 process = item,
                 index = index
             )
@@ -33,8 +37,13 @@ fun Timeline(contentPadding: PaddingValues, scheduledProcesses: List<SimulatedPr
 }
 
 @Composable
-fun TimelineItem(process: SimulatedProcess, index: Int) {
+fun TimelineItem(
+    modifier: Modifier = Modifier,
+    process: SimulatedProcess,
+    index: Int
+) {
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

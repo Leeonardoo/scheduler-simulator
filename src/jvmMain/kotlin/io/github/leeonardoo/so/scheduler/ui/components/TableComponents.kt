@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +35,7 @@ fun StatisticsTable(addedProcesses: List<SimulatedProcess>) {
     ) {
         item {
             Row(
-                Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 TableCell(
@@ -88,9 +89,15 @@ fun StatisticsTable(addedProcesses: List<SimulatedProcess>) {
             )
         }
 
-        items(addedProcesses) { process ->
+        items(
+            items = addedProcesses,
+            key = { it.id }
+        ) { process ->
             Row(
-                Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(0.5.dp))
+                    .animateItemPlacement(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 ColorDot(
@@ -134,10 +141,8 @@ fun StatisticsTable(addedProcesses: List<SimulatedProcess>) {
                 )
             }
             Divider(
-                color = Color.LightGray,
                 modifier = Modifier
                     .height(1.dp)
-                    .fillMaxHeight()
                     .fillMaxWidth()
             )
         }
@@ -149,7 +154,7 @@ fun ColorDot(
     modifier: Modifier = Modifier,
     process: SimulatedProcess
 ) {
-    Box(modifier = modifier.padding(12.dp)) {
+    Box(modifier = modifier.padding(8.dp)) {
         Box(
             modifier = Modifier
                 .size(24.dp)
