@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -91,26 +92,40 @@ private fun SimulationContent(
             .padding(paddingValues)
             .fillMaxSize()
     ) {
-        val processScrollState = rememberLazyListState()
         val contentScrollState = rememberScrollState()
 
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .weight(0.42f)
-                .fillMaxHeight(),
-            contentPadding = PaddingValues(12.dp)
+                .fillMaxHeight()
         ) {
-            items(items = items, key = { it.id }) {
-                ProcessCard(
-                    process = it,
-                    showPriority = algorithm == Algorithm.PreemptiveStaticPriority || algorithm == Algorithm.NonPreemptiveStaticPriority,
-                    onClickEdit = { onClickEdit(it) },
-                    onClickRemove = { onClickRemove(it) }
-                )
-            }
-        }
+            val processScrollState = rememberLazyListState()
 
-        VerticalScrollbar(rememberScrollbarAdapter(processScrollState))
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = processScrollState,
+                contentPadding = PaddingValues(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(items = items, key = { it.id }) {
+                    ProcessCard(
+                        process = it,
+                        showPriority = algorithm == Algorithm.PreemptiveStaticPriority || algorithm == Algorithm.NonPreemptiveStaticPriority,
+                        onClickEdit = { onClickEdit(it) },
+                        onClickRemove = { onClickRemove(it) }
+                    )
+                }
+            }
+
+            VerticalScrollbar(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                adapter = rememberScrollbarAdapter(scrollState = processScrollState),
+                style = LocalScrollbarStyle.current.copy(
+                    unhoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                    hoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                )
+            )
+        }
 
         Divider(
             modifier = Modifier
