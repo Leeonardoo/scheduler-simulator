@@ -129,17 +129,34 @@ private fun SimulationContent(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
+                .padding(top = 12.dp)
         ) {
-            if (scheduledProcesses.isNotEmpty() && avgWaiting > 0.0 && avgTurnArround > 0.0) {
+            if (scheduledProcesses.isNotEmpty()) {
 
+                // Timeline
                 Timeline(
                     contentPadding = PaddingValues(horizontal = 12.dp),
                     scheduledProcesses = scheduledProcesses
                 )
 
-                Text("Estatísticas gerais", style = MaterialTheme.typography.titleMedium)
-                Text("Tempo médio de espera: ${String.format("%.02f", avgWaiting)}")
-                Text("Tempo médio de resposta: ${String.format("%.02f", avgTurnArround)}")
+                Spacer(Modifier.height(16.dp))
+
+                // Overall
+                Text(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    text = "Estatísticas gerais",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    text = "Tempo médio de espera: ${String.format("%.02f", avgWaiting)}"
+                )
+                Text(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    text = "Tempo médio de resposta: ${String.format("%.02f", avgTurnArround)}"
+                )
+
+                // Statistics table
             }
         }
 

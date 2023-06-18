@@ -59,6 +59,7 @@ fun ScrollbarLazyRow(
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     flingBehavior: FlingBehavior = ScrollableDefaults.flingBehavior(),
     userScrollEnabled: Boolean = true,
+    scrollbarPadding: PaddingValues = PaddingValues(),
     content: LazyListScope.() -> Unit
 ) {
     Box(modifier = modifier.fillMaxWidth()) {
@@ -75,7 +76,7 @@ fun ScrollbarLazyRow(
         )
 
         HorizontalScrollbar(
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier.align(Alignment.BottomCenter).padding(scrollbarPadding),
             adapter = rememberScrollbarAdapter(scrollState = state),
             style = LocalScrollbarStyle.current.copy(
                 unhoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),

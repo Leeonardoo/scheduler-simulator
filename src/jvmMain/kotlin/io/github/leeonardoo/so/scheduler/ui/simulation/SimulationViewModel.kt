@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class SimulationViewModel(
@@ -54,6 +55,13 @@ class SimulationViewModel(
         simulate()
     }
 
+    // Redefinir todas as propriedades que podiam ter sido alteradas pelo Scheduler
+    private fun prepareItems() {
+        _addedProcesses.value = _addedProcesses.value.map {
+            it.copy(completionInfo = null, remainingTime = it.burstTime)
+        }
+    }
+
     fun addProcess(simulatedProcess: SimulatedProcess) {
         _addedProcesses.value = _addedProcesses.value.toMutableList().also {
             it.add(simulatedProcess)
@@ -64,7 +72,7 @@ class SimulationViewModel(
 
     fun removeProcess(simulatedProcess: SimulatedProcess) {
         _addedProcesses.value = _addedProcesses.value.toMutableList().also {
-            it.remove(simulatedProcess)
+            it.removeAll { oldProcess -> oldProcess.id == simulatedProcess.id }
         }.sortedBy { it.arrivalTime }
 
         simulate()
@@ -72,7 +80,7 @@ class SimulationViewModel(
 
     fun updateProcess(simulatedProcess: SimulatedProcess) {
         _addedProcesses.value = _addedProcesses.value.toMutableList().also {
-            it.removeIf { oldProcess -> oldProcess.id == simulatedProcess.id }
+            it.removeAll { oldProcess -> oldProcess.id == simulatedProcess.id }
             it.add(simulatedProcess)
         }.sortedBy { it.arrivalTime }
 
@@ -81,6 +89,8 @@ class SimulationViewModel(
 
     private fun simulate() {
         CoroutineScope(Dispatchers.Default).launch {
+            prepareItems()
+
             if (_addedProcesses.value.isNotEmpty()) {
                 val scheduler = Scheduler(processes = _addedProcesses.value, algorithm = algorithm)
                 _scheduledProcesses.value = scheduler.simulate()

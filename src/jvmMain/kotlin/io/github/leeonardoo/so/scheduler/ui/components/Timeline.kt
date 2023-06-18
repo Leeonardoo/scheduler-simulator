@@ -19,6 +19,7 @@ import io.github.leeonardoo.so.scheduler.model.SimulatedProcess
 @Composable
 fun Timeline(contentPadding: PaddingValues, scheduledProcesses: List<SimulatedProcess>) {
     ScrollbarLazyRow(
+        scrollbarPadding = contentPadding,
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
