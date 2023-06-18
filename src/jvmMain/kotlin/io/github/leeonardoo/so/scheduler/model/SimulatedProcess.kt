@@ -1,14 +1,17 @@
 package io.github.leeonardoo.so.scheduler.model
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import java.util.UUID
 import kotlin.random.Random
 
+@Immutable
 data class SimulatedProcess (
     val id: UUID = UUID.randomUUID(),
     val color: Color = Color.random(),
     val arrivalTime: Int, // Tempo de chegada
     val burstTime: Int, // Duração
+    var remainingTime: Int = burstTime, // Tempo restante
     val priority: Int? = null, // Prioridade (se tiver)
     val completionInfo: ProcessCompletionInfo? = null
 )
