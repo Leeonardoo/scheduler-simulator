@@ -1,19 +1,56 @@
 package io.github.leeonardoo.so.scheduler.ui.simulation
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.github.leeonardoo.so.scheduler.Algorithm
+import io.github.leeonardoo.so.scheduler.model.SimulatedProcess
+import io.github.leeonardoo.so.scheduler.ui.ProcessDialog
+import io.github.leeonardoo.so.scheduler.ui.components.ProcessCard
 
 @Composable
-fun SimulationScreen(algorithm: Algorithm) {
+fun SimulationScreen(
+    viewModel: SimulationViewModel,
+    algorithm: Algorithm,
+    isDialogVisible: Boolean,
+    onDismissDialog: () -> Unit
+) {
+
+    val items by viewModel.addedProcesses.collectAsState()
+
+    var selectedProcess by remember {
+        mutableStateOf<SimulatedProcess?>(null)
+    }
+
+    if (isDialogVisible || selectedProcess != null) {
+        ProcessDialog(
+            algorithm = algorithm,
+            process = selectedProcess,
+            onDismiss = {
+                selectedProcess = null
+                onDismissDialog()
+            },
+            onClickConfirm = {
+                if (selectedProcess != null) {
+                    viewModel.editProcess(it)
+                    selectedProcess = null
+                } else {
+                    viewModel.addProcess(it)
+                }
+
+                onDismissDialog()
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -26,30 +63,54 @@ fun SimulationScreen(algorithm: Algorithm) {
             )
         },
         content = {
-            SimulationContent(paddingValues = it, algorithm = algorithm)
+            SimulationContent(
+                paddingValues = it,
+                algorithm = algorithm,
+                items = items,
+                onClickEdit = {
+                    selectedProcess = it
+                },
+                onClickRemove = {
+                    viewModel.removeProcess(it)
+                },
+            )
         }
     )
 }
 
 @Composable
-private fun SimulationContent(paddingValues: PaddingValues, algorithm: Algorithm) {
+private fun SimulationContent(
+    paddingValues: PaddingValues,
+    algorithm: Algorithm,
+    items: List<SimulatedProcess>,
+    onClickEdit: (SimulatedProcess) -> Unit,
+    onClickRemove: (SimulatedProcess) -> Unit
+) {
     Row(
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxSize()
     ) {
-        val processScrollState = rememberScrollState()
+        val processScrollState = rememberLazyListState()
         val contentScrollState = rememberScrollState()
 
-        Column(
+        LazyColumn(
             modifier = Modifier
-                .verticalScroll(processScrollState)
                 .weight(0.42f)
-                .background(Color.Red)
-                .fillMaxHeight()
+                .fillMaxHeight(),
+            contentPadding = PaddingValues(12.dp)
         ) {
-
+            items(items = items, key = { it.id }) {
+                ProcessCard(
+                    process = it,
+                    showPriority = algorithm == Algorithm.PreemptiveStaticPriority || algorithm == Algorithm.NonPreemptiveStaticPriority,
+                    onClickEdit = { onClickEdit(it) },
+                    onClickRemove = { onClickRemove(it) }
+                )
+            }
         }
+
+        VerticalScrollbar(rememberScrollbarAdapter(processScrollState))
 
         Divider(
             modifier = Modifier
@@ -73,6 +134,11 @@ private fun SimulationContent(paddingValues: PaddingValues, algorithm: Algorithm
 @Composable
 fun SimulationScreenPreview() {
     MaterialTheme(darkColorScheme()) {
-        SimulationScreen(algorithm = Algorithm.FIFO)
+        SimulationScreen(
+            viewModel = SimulationViewModel(algorithm = Algorithm.FIFO),
+            algorithm = Algorithm.FIFO,
+            isDialogVisible = false,
+            onDismissDialog = {}
+        )
     }
 }

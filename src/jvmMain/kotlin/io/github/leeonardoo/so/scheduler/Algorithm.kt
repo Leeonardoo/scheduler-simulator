@@ -8,7 +8,7 @@ import androidx.compose.material.icons.filled.Sort
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.arkivanov.essenty.parcelable.Parcelable
 
-enum class Algorithm(val title: String, val label: String, val icon: ImageVector): Parcelable {
+enum class Algorithm(val title: String, val label: String, val icon: ImageVector) : Parcelable {
 
     FIFO(
         title = "FIFO (First-in-First-out)",

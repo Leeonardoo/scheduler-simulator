@@ -225,7 +225,8 @@ class Scheduler(
                     currentHighestPriorityProcess.remainingTime--
                 }
 
-                processQueue[processQueue.indexOf(currentHighestPriorityProcess)] = currentHighestPriorityProcess.copy(arrivalTime = currentHighestPriorityProcess.arrivalTime + duration)
+                processQueue[processQueue.indexOf(currentHighestPriorityProcess)] =
+                    currentHighestPriorityProcess.copy(arrivalTime = currentHighestPriorityProcess.arrivalTime + duration)
 
                 // Remove o processo atual da fila se o tempo de execução restante for 0
                 if (currentHighestPriorityProcess.remainingTime <= 0) {

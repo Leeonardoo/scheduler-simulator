@@ -1,7 +1,5 @@
 package io.github.leeonardoo.so.scheduler.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.LocalScrollbarStyle
 import androidx.compose.foundation.defaultScrollbarStyle
 import androidx.compose.material3.MaterialTheme
@@ -21,29 +19,24 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.StackNavigation
-import com.arkivanov.decompose.router.stack.navigate
+import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.leeonardoo.so.scheduler.Algorithm
 import io.github.leeonardoo.so.scheduler.ui.main.NavigationRailScaffold
 import io.github.leeonardoo.so.scheduler.ui.navigation.ChildStack
 import io.github.leeonardoo.so.scheduler.ui.navigation.ProvideComponentContext
 import io.github.leeonardoo.so.scheduler.ui.simulation.SimulationScreen
+import io.github.leeonardoo.so.scheduler.ui.simulation.SimulationViewModel
 
 @Composable
 fun App() {
     val navigation = remember { StackNavigation<Algorithm>() }
-
-    var selectedAlgorithm by remember {
-        mutableStateOf(Algorithm.FIFO)
-    }
-
-    var isDialogVisible by remember {
-        mutableStateOf(false)
-    }
+    var selectedAlgorithm by remember { mutableStateOf(Algorithm.FIFO) }
+    var isDialogVisible by remember { mutableStateOf(false) }
 
     MaterialTheme(colorScheme = darkColorScheme()) {
-        if (isDialogVisible) {
-            ProcessDialog(algorithm = selectedAlgorithm, onDismiss = {isDialogVisible = false})
+        val viewModels = remember {
+            Algorithm.values().associateWith { SimulationViewModel(it) }
         }
 
         NavigationRailScaffold(
@@ -52,9 +45,7 @@ fun App() {
             },
             onClickItem = {
                 selectedAlgorithm = it
-                navigation.navigate { _ ->
-                    listOf(it)
-                }
+                navigation.bringToFront(it)
             },
             selectedAlgorithm = selectedAlgorithm,
             content = {
@@ -65,7 +56,12 @@ fun App() {
                         handleBackButton = true,
                         animation = stackAnimation(scale() + fade()),
                     ) { algorithm ->
-                        SimulationScreen(algorithm)
+                        SimulationScreen(
+                            viewModel = viewModels[algorithm]!!,
+                            algorithm = algorithm,
+                            isDialogVisible = isDialogVisible,
+                            onDismissDialog = { isDialogVisible = false }
+                        )
                     }
                 }
             }

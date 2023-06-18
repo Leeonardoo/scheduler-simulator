@@ -2,11 +2,11 @@ package io.github.leeonardoo.so.scheduler.model
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
-import java.util.UUID
+import java.util.*
 import kotlin.random.Random
 
 @Immutable
-data class SimulatedProcess (
+data class SimulatedProcess(
     val id: UUID = UUID.randomUUID(),
     val color: Color = Color.random(),
     val arrivalTime: Int, // Tempo de chegada
