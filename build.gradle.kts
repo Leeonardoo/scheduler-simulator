@@ -61,7 +61,7 @@ compose.desktop {
     application {
         mainClass = "io.github.leeonardoo.so.scheduler.ui.AppKt"
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "scheduler"
             packageVersion = "1.0.0"
 
